@@ -22,7 +22,7 @@ carpeta = "/home/oem/Desktop/uni/TP1/"
 pais_PBI= pd.read_csv(carpeta+"PBI.csv")
 paises_regiones= pd.read_csv(carpeta+ "paises_regiones.csv")
 sedes= pd.read_csv(carpeta+ "lista_sedes.csv")
-datos_sedes= pd.read_csv(carpeta+ "lista_sedes_datos.csv")
+datos_sedes= pd.read_csv(carpeta+ "lista_sedes_datos.csv") ##no puedo cargar esta tabla
 secciones = pd.read_csv(carpeta+"lista_secciones.csv")
 
                          #////////////////////////////#
@@ -32,28 +32,80 @@ secciones = pd.read_csv(carpeta+"lista_secciones.csv")
 #Nos quedamos con los datos de 2022
 #Para poder hacer la consultaSQL tuve que cambiar los nombres de las columnas
 consultaSQL= """
-                SELECT Country_Name AS 'Pais',
-                       Country_Code AS 'id',
+                SELECT pp.Country_Name AS 'Pais',
+                       pp.Country_Code AS 'id',
                        Indicator_Name,
                        Indicator_Code,
-                       vente_22 AS 'PBI'
-                FROM pais_PBI
+                       veinte_22 AS 'PBI',
+                       pr.Region
+                FROM pais_PBI AS pp
+                INNER JOIN paises_regiones AS pr
+                ON pp.Country_Code = pr.Country_Code
            """
 pbi_2022= sql^consultaSQL
 
 
 #REDONDEA LOS PBI NOSE SI ESTARA BIEN??
-
-   #///////////////////////////////#
-   # LIMPIAMOS TABLA PAIS - regions#
-   #///////////////////////////////#
-#no hay un codigo para identificar las regiones de los paises
+#le agregue la region como atributo, para mi tambien habria que sacarle 
+#Indicator_Name, Indicator_Code,
+#////////////PARA GQM /////////////////////////////////////////////////////
+consultaSQL = """
+            SELECT COUNT(*)
+            FROM pbi_2022 as o
+            WHERE o.PBI<=0 OR o.PBI > 0
+            
+            """
+CAntidad_datos_conPBI= sql^consultaSQL 
+consultaSQL = """
+            SELECT COUNT(*)
+            FROM pbi_2022 as o
    
+            """
+cantidad_total_datos = sql^consultaSQL
+
+datos_sin_info= 266-244
+
+porcentaje_de_datos_sin_info= datos_sin_info/266 *100
+
+Cantidad_datos_conPBI= sql^consultaSQL 
+consultaSQL = """
+             SELECT id
+             FROM pbi_2022 as o
+             WHERE id NOT IN (
+            SELECT id
+            FROM pbi_2022 AS P
+            WHERE P.PBI<=0 OR P.PBI > 0
+               )
+    
+             """
+paises_sin_datos = sql^consultaSQL
+             
+consultaSQL = """
+             SELECT pais_iso_3 AS 'id'
+             FROM sedes 
+             WHERE id  IN (
+            SELECT id
+            FROM paises_sin_datos
+               )
+    
+             """
+
+sedes_en_paises_sin_Pbi = sql^consultaSQL
+#////////////PARA GQM /////////////////////////////////////////////////////
+
+  #////////////////////////#
+  # LIMPIAMOS TABLA SEDES  #
+  #////////////////////////#
+
+
+
 consultaSQL= """
-                SELECT Country_Code AS 'id_pais',
-                       Region
+                SELECT sede_id AS 'id', sede_desc_castellano AS 'descripcion',
+                      pais_iso_3 AS id_paises, 
+                      ciudad_castellano AS 'ciudad', estado, sede_tipo, 
+                      
                        
-                FROM paises_regiones
+                FROM sedes
            """
-regiones_pais= sql^consultaSQL
+sedes_2= sql^consultaSQL
 
