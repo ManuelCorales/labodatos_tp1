@@ -39,11 +39,15 @@ def limpiarTablaSecciones(carpetaOriginal, carpetaDump):
 
 
 def crearTabla(df: DataFrame, carpetaDump: str, nombreArchivo: str, agregarCampoId = False):
+    if(agregarCampoId):
+        df.index += 1
+
     df.to_csv(carpetaDump + nombreArchivo, index = agregarCampoId, index_label="id")
 
 
 def ejecutarQuery(query: str) -> DataFrame:
     return sql^query
+
 
 if(__name__ == "__main__"):
     main()
