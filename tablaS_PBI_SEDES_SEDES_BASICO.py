@@ -16,13 +16,12 @@ import pandas as pd
 from inline_sql import sql, sql_val
 
 ###Cargar tablas###
-carpeta = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_originales/"
-
+carpeta =  "/home/oem/Desktop/uni/TP1/"
 pais_PBI = pd.read_csv(carpeta + "PBI.csv")
 paises_regiones= pd.read_csv(carpeta+ "paises_regiones.csv")
-sedes= pd.read_csv(carpeta+ "lista-sedes.csv")
-datos_sedes= pd.read_csv(carpeta+ "lista-sedes-datos.csv") ##no puedo cargar esta tabla
-secciones = pd.read_csv(carpeta+"lista-secciones.csv")
+sedes= pd.read_csv(carpeta+ "lista_sedes.csv")
+datos_sedes= pd.read_csv(carpeta+ "lista_sedes_datos.csv") ##no puedo cargar esta tabla
+secciones = pd.read_csv(carpeta+"lista_secciones.csv")
 
 
                          #////////////////////////////#
@@ -41,7 +40,7 @@ consultaSQL= """
                 ON pp.Country_Code = pr.Country_Code
                 WHERE "veinte_22" IS NOT NULL
            """
-pbi_2022= sql^consultaSQL
+Pais = sql^consultaSQL
 
 
 #le agregue la region como atributo
@@ -98,12 +97,12 @@ sedes_en_paises_sin_Pbi = sql^consultaSQL
 
 consultaSQL= """
                 SELECT sede_id AS 'id',
-                      pais_iso_3 AS pais_id, 
-                      estado
-                       
+                      pais_iso_3 AS pais_id
+            
                 FROM sedes
+                WHERE sedes.estado = 'Activo'
            """
-sedes_2= sql^consultaSQL
-
+Sedes= sql^consultaSQL
+#las sede con estado inactivo no las cuento 
 
 #//////////////////////////////////////////////////////////////////////////
