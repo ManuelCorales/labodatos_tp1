@@ -17,36 +17,55 @@ def main():
     print("# Creamos/Importamos los datasets que vamos a utilizar en este programa")
     print("# =============================================================================")
 
-    carpeta = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
-
+    #carpeta = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
+    carpeta = "/home/oem/Desktop/uni/TP1/labodatos_tp1/csv_limpios/"
 
     paises = pd.read_csv(carpeta+"paises.csv")
     redes_sociales = pd.read_csv(carpeta+"redes_sociales.csv")
     secciones = pd.read_csv(carpeta+"secciones.csv")
-    sedes = pd.read_csv(carpeta+"sedes.csv")
+    sedes = pd.read_csv(carpeta+"Sedes.csv")
 
 #%%
 # =============================================================================
-# PUNTO H.i (no lo pude terminar)
+# PUNTO H.i (terminado)
 # =============================================================================
 # primero unimos pais con sedes por medio del id_pais, y guardamos el resultado
    
     pais_sedes = sql^"""
-                  SELECT p.nombre, COUNT(*) AS 'sedes', p.PBI AS 'PBI per Cápita 2022 (U$S)', p.id
+                  SELECT p.nombre, COUNT(*) AS 'cantidad_de_sedes', p.PBI AS 'PBI', p.id
                   FROM paises AS p
                   JOIN sedes AS s
                   ON p.id = s.pais_id
                   GROUP BY p.nombre, p.PBI, p.id
                   """   
-# ahora,  traigo la tabla pais_sedes y le sumo cantidad de secciones en promedio 
-# que pose en sus sedes
+# ahora,  hago una tabla con la cantidad de secciones por paises
 
-    sedes_secciones = sql^"""
-                SELECT sec.id_sede, sed.pais_id
-                FROM secciones AS sec
-                JOIN sedes AS sed
-                ON sec.id_sede = sed.id
-                """
+
+                
+    secciones_por_pais = sql^"""
+                        SELECT pais_id,
+                        COUNT(sc.id) AS "cantidad_de_secciones"
+                        FROM secciones sc
+                        JOIN sedes AS sd
+                        ON sd.id = sc.id_sede
+                        GROUP BY pais_id
+                        """
+#hago otra tabla que tome la columna de 'cantidad_de_sedes' de pais_sedes y la columna 
+#'cantidad_de_secciones' de secciones_por _pais y las divido secciones/sede                        
+    secciones_promedios = sql^"""
+                        SELECT pais_id,
+                        sp.cantidad_de_secciones/ps.cantidad_de_sedes AS 'secciones_promedio'
+                        FROM secciones_por_pais sp
+                        JOIN pais_sedes ps
+                        ON ps.id= sp.pais_id
+                        """
+    reporte_1 = sql^"""
+              SELECT nombre, cantidad_de_sedes AS 'sedes',
+              secciones_promedio, PBI AS 'PBI per Cápita 2022 (U$S)'
+              FROM pais_sedes AS ps
+              JOIN secciones_promedios AS sc
+              ON sc.pais_id = ps.id
+              """
 #%%
 # =============================================================================
 # PUNTO H.ii (terminado)
