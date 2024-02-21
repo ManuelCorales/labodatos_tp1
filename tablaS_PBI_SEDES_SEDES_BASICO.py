@@ -39,7 +39,7 @@ consultaSQL= """
                 FROM pais_PBI AS pp
                 INNER JOIN paises_regiones AS pr
                 ON pp.Country_Code = pr.Country_Code
-                WHERE "veinte_22" IS NOT NULL
+                WHERE "veinte_22" IS NOT NULL AND Region IS NOT NULL
            """
 Pais = sql^consultaSQL
 
@@ -112,3 +112,17 @@ Sedes.to_csv('/home/oem/Desktop/uni/TP1/labodatos_tp1/csv_limpios/' +'Sedes.csv'
 
     
 #//////////////////////////////////////////////////////////////////////////
+prueba = sql^"""
+      SELECT id 
+      FROM Pais
+      WHERE Pais.Region IS NULL
+         """
+prueba2= sql^"""
+        SELECT prueba.id
+        FROM  prueba
+        INNER JOIN Sedes
+        ON prueba.id= pais_id
+        """
+#como habia muchos datos en la tabla pais que tenian la region incompleta (ademas de que el pais no era un pais sino una region)
+#nos fijamos si alguno de estos tenian sedes argentinas y como no lo hacian, 
+#decidimos descartar los mismos 
