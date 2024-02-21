@@ -15,18 +15,20 @@ from pandas import DataFrame
     id(PK) → (id_sede(FK))
     
     Tabla red social:
-    {id_sede(FK), tipo} → URL
+    {id_sede(FK), url} → tipo
 """
 
+carpetaOriginal = "./csv_originales/" 
+carpetaDump = "./csv_limpios/"
+
+
+
 def main():
-    carpetaOriginal = "./csv_originales/" 
-    carpetaDump = "./csv_limpios/"
-
-    limpiarTablaSecciones(carpetaOriginal, carpetaDump)
-    
+    armarTablaSecciones()
+    armarTablaRedes()
 
 
-def limpiarTablaSecciones(carpetaOriginal, carpetaDump):
+def armarTablaSecciones():
     seccionesCsv = pd.read_csv(carpetaOriginal + "lista-secciones.csv")
     query= """
                 SELECT
@@ -35,10 +37,76 @@ def limpiarTablaSecciones(carpetaOriginal, carpetaDump):
     """
 
     secciones: DataFrame = ejecutarQuery(query)
-    crearTabla(secciones, carpetaDump, "secciones.csv", agregarCampoId = True)
+    crearTabla(secciones, "secciones.csv", agregarCampoId = True)
 
 
-def crearTabla(df: DataFrame, carpetaDump: str, nombreArchivo: str, agregarCampoId = False):
+def armarTablaRedes():
+
+    # Redes que se tendrán en cuenta para clasificarlas según tipo
+    tiposRedes = [
+        "facebook",
+        "twitter",
+        "instagram",
+        "x",
+        "linkedin",
+        "youtube",
+        "flickr"
+    ]
+    sedesCsv = pd.read_csv(carpetaOriginal + "lista-sedes-datos.csv")
+    query= """
+                SELECT
+                    s.sede_id AS id_sede,
+                    s.redes_sociales
+                FROM sedesCsv as s
+    """
+
+    sedes: DataFrame = ejecutarQuery(query)
+
+    # Creo un array donde ire agregando un array con las redes parseadas para cada sede
+    redesPorSede = []
+    for i, sede in sedes.iterrows():
+        redesTrim = []
+        
+        redes = sede["redes_sociales"]
+        if(redes == None):
+            redesPorSede.append(redesTrim)
+            continue
+
+        redes = redes.split("// ")
+
+        for red in redes:
+            trimmedRed = red.strip()
+
+            if(trimmedRed != ""):
+                redesTrim.append(trimmedRed)
+
+        redesPorSede.append(redesTrim)
+
+
+
+
+    # Creo un nuevo df donde le asigno a cada sede su serie de redes parseadas
+    redesSociales = DataFrame(columns=['id_sede', 'url', 'tipo'])
+    for i, redes in enumerate(redesPorSede):
+        for url in redes:
+            redEncontrada = False
+            for tipoRed in tiposRedes:
+                if tipoRed in url:
+                    sedeId = sedes.iloc[i]["id_sede"]
+
+                    df = DataFrame({'id_sede': sedeId, 'url': url, 'tipo': tipoRed}, index=[0])
+                    redesSociales = pd.concat([redesSociales, df])
+                    redEncontrada = True
+                    break
+            if(redEncontrada == False):
+                sedeId = sedes.iloc[i]["id_sede"]
+                df = DataFrame({'id_sede': sedeId, 'url': url, 'tipo': 'desconocido'}, index=[0])
+                redesSociales = pd.concat([redesSociales, df])
+
+    crearTabla(redesSociales, "redes_sociales.csv")
+
+
+def crearTabla(df: DataFrame, nombreArchivo: str, agregarCampoId = False):
     if(agregarCampoId):
         df.index += 1
 
