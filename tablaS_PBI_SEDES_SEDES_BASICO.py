@@ -14,6 +14,7 @@ import numpy as np
 import os
 import pandas as pd 
 from inline_sql import sql, sql_val
+from pandas import DataFrame
 
 ###Cargar tablas###
 carpeta =  "/home/oem/Desktop/uni/TP1/"
@@ -42,6 +43,7 @@ consultaSQL= """
            """
 Pais = sql^consultaSQL
 
+Pais.to_csv('/home/oem/Desktop/uni/TP1/labodatos_tp1/csv_limpios/' +'Pais.csv' )
 
 #le agregue la region como atributo
 #////////////PARA GQM /////////////////////////////////////////////////////
@@ -104,5 +106,9 @@ consultaSQL= """
            """
 Sedes= sql^consultaSQL
 #las sede con estado inactivo no las cuento 
+Sedes.to_csv('/home/oem/Desktop/uni/TP1/labodatos_tp1/csv_limpios/' +'Sedes.csv' )
 
+
+
+    
 #//////////////////////////////////////////////////////////////////////////
