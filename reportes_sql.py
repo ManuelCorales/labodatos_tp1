@@ -84,22 +84,39 @@ def main():
 # PUNTO H.iii (terminado, creo)
 # =============================================================================
     consultasql = sql^"""
-                  SELECT rs.tipo, s.pais_id, COUNT()
+                  SELECT DISTINCT rs.tipo, s.pais_id 
                   FROM sedes AS s
                   JOIN redes_sociales AS rs
                   ON rs.id_sede = s.id
-                  GROUP BY rs.tipo, s.pais_id
+                  GROUP BY s.pais_id, rs.tipo
                   """  
 # ya que tenemos agrupado por pais, tipo de red (y contamos para que no aparezca)
 # por ejemplo, facebook chile dos veces
 # vamos a contar cuantas veces aparece el pais_id
 
     rs_paises = sql^"""
-                SELECT c.pais_id, COUNT()
+                SELECT c.pais_id, COUNT(tipo) AS 'tipos de redes'
                 FROM consultasql AS c
                 GROUP BY c.pais_id
                 """             
+           
+#%%
+# =============================================================================
+# PUNTO H.iv ()
+# =============================================================================
+    sedes_pais = sql^"""
+                SELECT s.id AS 'sede_id', p.nombre  
+                FROM sedes AS s
+                JOIN paises AS p
+                ON s.pais_id= p.id
+                """
 
-
+    reporte_4= sql^"""
+            SELECT sp.nombre AS 'Pais', r.id_sede, r.tipo AS 'red social',
+            r.url
+            FROM redes_sociales AS r
+            JOIN sedes_pais AS sp
+            ON r.id_sede = sp.sede_id
+            """
 if(__name__ == "__main__"):
   main()
