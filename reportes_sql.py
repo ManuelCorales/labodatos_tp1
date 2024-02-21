@@ -20,10 +20,10 @@ def main():
     carpeta = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
 
 
-    pais = pd.read_csv(carpeta+"Pais.csv")    
-    redes_sociales = pd.read_csv(carpeta+"redes_sociales.csv")    
-    secciones = pd.read_csv(carpeta+"secciones.csv")    
-    sedes = pd.read_csv(carpeta+"sedes.csv") 
+    paises = pd.read_csv(carpeta+"paises.csv")
+    redes_sociales = pd.read_csv(carpeta+"redes_sociales.csv")
+    secciones = pd.read_csv(carpeta+"secciones.csv")
+    sedes = pd.read_csv(carpeta+"sedes.csv")
 
 #%%
 # =============================================================================
@@ -33,7 +33,7 @@ def main():
    
     pais_sedes = sql^"""
                   SELECT p.nombre, COUNT(*) AS 'sedes', p.PBI AS 'PBI per Cápita 2022 (U$S)', p.id
-                  FROM pais AS p
+                  FROM paises AS p
                   JOIN sedes AS s
                   ON p.id = s.pais_id
                   GROUP BY p.nombre, p.PBI, p.id
@@ -41,12 +41,12 @@ def main():
 # ahora,  traigo la tabla pais_sedes y le sumo cantidad de secciones en promedio 
 # que pose en sus sedes
 
-     sedes_secciones = sql^"""
-                   SELECT sec.id_sede, sed.pais_id
-                   FROM secciones AS sec
-                   JOIN sedes AS sed
-                   ON sec.id_sede = sed.id
-                   """      
+    sedes_secciones = sql^"""
+                SELECT sec.id_sede, sed.pais_id
+                FROM secciones AS sec
+                JOIN sedes AS sed
+                ON sec.id_sede = sed.id
+                """
 #%%
 # =============================================================================
 # PUNTO H.ii (terminado)
@@ -54,7 +54,7 @@ def main():
 
     consultasql = sql^"""
                   SELECT p.Region, COUNT() AS 'Paises Con Sedes Argentinas', AVG(p.PBI) AS 'Promedio PBI per Cápita 2022 (U$S)'
-                  FROM pais AS p
+                  FROM paises AS p
                   INNER JOIN sedes AS s
                   ON p.id = s.pais_id
                   GROUP BY p.Region
@@ -75,8 +75,12 @@ def main():
 # por ejemplo, facebook chile dos veces
 # vamos a contar cuantas veces aparece el pais_id
 
-      rs_paises = sql^"""
-                    SELECT c.pais_id, COUNT()
-                    FROM consultasql AS c
-                    GROUP BY c.pais_id
-                    """             
+    rs_paises = sql^"""
+                SELECT c.pais_id, COUNT()
+                FROM consultasql AS c
+                GROUP BY c.pais_id
+                """             
+
+
+if(__name__ == "__main__"):
+  main()

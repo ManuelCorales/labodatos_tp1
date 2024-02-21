@@ -27,22 +27,42 @@ def main():
     armarTablaSecciones()
     armarTablaRedes()
     armarTablaSedes()
+    armarTablaPaises()
 
 
 
 def armarTablaSedes():
-    seccionesCsv = pd.read_csv(carpetaOriginal + "lista-sedes.csv")
+    sedesCsv = pd.read_csv(carpetaOriginal + "lista-sedes.csv")
     query= """
                 SELECT
-                    s.sede_id AS id_sede,
+                    sede_id AS 'id',
                     pais_iso_3 AS pais_id
-                WHERE estado = "Activo"
-                FROM sedesCsv as s
+                FROM sedesCsv
+                WHERE estado = 'Activo'
     """
 
     sedes: DataFrame = ejecutarQuery(query)
-    crearTabla(sedes, "secciones.csv", agregarCampoId = True)
+    crearTabla(sedes, "sedes.csv", agregarCampoId = False)
 
+
+def armarTablaPaises():
+    paisesCsv = pd.read_csv(carpetaOriginal + "PBI.csv")
+    paisesRegionesCsv = pd.read_csv(carpetaOriginal + "paises_regiones.csv")
+
+    query= """
+                SELECT 
+                    pp.Country_Code AS 'id',
+                    pp.Country_Name AS 'nombre',
+                    pp."2022" AS 'PBI',
+                    pr.Region AS 'region'
+                FROM paisesCsv AS pp
+                INNER JOIN paisesRegionesCsv AS pr
+                ON pp.Country_Code = pr.Country_Code
+                WHERE pp."2022" IS NOT NULL AND region IS NOT NULL
+    """
+
+    paises: DataFrame = ejecutarQuery(query)
+    crearTabla(paises, "paises.csv")
 
 
 def armarTablaSecciones():
