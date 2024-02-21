@@ -26,16 +26,14 @@ datos_sedes= pd.read_csv(carpeta+ "lista_sedes_datos.csv") ##no puedo cargar est
 secciones = pd.read_csv(carpeta+"lista_secciones.csv")
 
                          #////////////////////////////#
-                         # LIMPIAMOS TABLA PAIS - PBI #
+                         #                 PAIS - PBI #
                          #////////////////////////////#
 
 #Nos quedamos con los datos de 2022
 #Para poder hacer la consultaSQL tuve que cambiar los nombres de las columnas
 consultaSQL= """
-                SELECT pp.Country_Name AS 'Pais',
-                       pp.Country_Code AS 'id',
-                       Indicator_Name,
-                       Indicator_Code,
+                SELECT pp.Country_Code AS 'id',
+                    pp.Country_Name AS 'nombre',
                        veinte_22 AS 'PBI',
                        pr.Region
                 FROM pais_PBI AS pp
@@ -46,8 +44,7 @@ pbi_2022= sql^consultaSQL
 
 
 #REDONDEA LOS PBI NOSE SI ESTARA BIEN??
-#le agregue la region como atributo, para mi tambien habria que sacarle 
-#Indicator_Name, Indicator_Code,
+#le agregue la region como atributo
 #////////////PARA GQM /////////////////////////////////////////////////////
 consultaSQL = """
             SELECT COUNT(*)
@@ -94,18 +91,19 @@ sedes_en_paises_sin_Pbi = sql^consultaSQL
 #////////////PARA GQM /////////////////////////////////////////////////////
 
   #////////////////////////#
-  # LIMPIAMOS TABLA SEDES  #
+  #           TABLA SEDES  #
   #////////////////////////#
 
 
 
 consultaSQL= """
-                SELECT sede_id AS 'id', sede_desc_castellano AS 'descripcion',
-                      pais_iso_3 AS id_paises, 
-                      ciudad_castellano AS 'ciudad', estado, sede_tipo, 
-                      
+                SELECT sede_id AS 'id',
+                      pais_iso_3 AS pais_id, 
+                      estado
                        
                 FROM sedes
            """
 sedes_2= sql^consultaSQL
 
+
+#//////////////////////////////////////////////////////////////////////////
