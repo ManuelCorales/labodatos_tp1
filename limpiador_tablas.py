@@ -9,7 +9,7 @@ from pandas import DataFrame
     id(PK) → (nombre, PBI, región)
 
     Tabla sedes:
-    id(PK) →(pais_id(FK), estado)
+    id(PK) →(pais_id(FK))
 
     Tabla secciones:
     id(PK) → (id_sede(FK))
@@ -18,14 +18,31 @@ from pandas import DataFrame
     {id_sede(FK), url} → tipo
 """
 
-carpetaOriginal = "./csv_originales/" 
-carpetaDump = "./csv_limpios/"
+carpetaOriginal = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_originales/" 
+carpetaDump = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
 
 
 
 def main():
     armarTablaSecciones()
     armarTablaRedes()
+    armarTablaSedes()
+
+
+
+def armarTablaSedes():
+    seccionesCsv = pd.read_csv(carpetaOriginal + "lista-sedes.csv")
+    query= """
+                SELECT
+                    s.sede_id AS id_sede,
+                    pais_iso_3 AS pais_id
+                WHERE estado = "Activo"
+                FROM sedesCsv as s
+    """
+
+    sedes: DataFrame = ejecutarQuery(query)
+    crearTabla(sedes, "secciones.csv", agregarCampoId = True)
+
 
 
 def armarTablaSecciones():
