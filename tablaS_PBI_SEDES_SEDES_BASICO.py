@@ -16,14 +16,14 @@ import pandas as pd
 from inline_sql import sql, sql_val
 
 ###Cargar tablas###
-carpeta = "/home/oem/Desktop/uni/TP1/"
+carpeta = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_originales/"
 
-
-pais_PBI= pd.read_csv(carpeta+"PBI.csv")
+pais_PBI = pd.read_csv(carpeta + "PBI.csv")
 paises_regiones= pd.read_csv(carpeta+ "paises_regiones.csv")
-sedes= pd.read_csv(carpeta+ "lista_sedes.csv")
-datos_sedes= pd.read_csv(carpeta+ "lista_sedes_datos.csv") ##no puedo cargar esta tabla
-secciones = pd.read_csv(carpeta+"lista_secciones.csv")
+sedes= pd.read_csv(carpeta+ "lista-sedes.csv")
+datos_sedes= pd.read_csv(carpeta+ "lista-sedes-datos.csv") ##no puedo cargar esta tabla
+secciones = pd.read_csv(carpeta+"lista-secciones.csv")
+
 
                          #////////////////////////////#
                          #                 PAIS - PBI #
@@ -39,11 +39,11 @@ consultaSQL= """
                 FROM pais_PBI AS pp
                 INNER JOIN paises_regiones AS pr
                 ON pp.Country_Code = pr.Country_Code
+                WHERE "veinte_22" IS NOT NULL
            """
 pbi_2022= sql^consultaSQL
 
 
-#REDONDEA LOS PBI NOSE SI ESTARA BIEN??
 #le agregue la region como atributo
 #////////////PARA GQM /////////////////////////////////////////////////////
 consultaSQL = """
