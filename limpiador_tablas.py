@@ -1,4 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+Materia     : Laboratorio de datos - FCEyN - UBA
+Grupo       : Grupo 2
+Detalle     : 
+    En este documento se realiza el proceso de limpieza de las tablas
+    El mismo fue agrupado en funciones con nombres representativos     
+Autores     : Corales, Biasoni y Soler
+"""
 
+#%% Importacion de librerias
 import pandas as pd
 from inline_sql import sql, sql_val
 from pandas import DataFrame
@@ -18,6 +28,8 @@ from pandas import DataFrame
     {id_sede(FK), url} → tipo
 """
 
+#%% carpetaOriginal contiene los csv sin limpiar
+## Luego de ser limpiados, se almacenan en carpetaDump
 carpetaOriginal = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_originales/" 
 carpetaDump = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
 

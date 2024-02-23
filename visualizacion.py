@@ -1,3 +1,13 @@
+"""
+Materia     : Laboratorio de datos - FCEyN - UBA
+Grupo       : Grupo 2
+Detalle     : 
+    En este documento se realizan las visualizaciones pedidas
+    
+Autores     : Corales, Biasoni y Soler
+
+"""
+#%% Importacion de librerias
 import pandas as pd
 from inline_sql import sql, sql_val
 from pandas import DataFrame
@@ -9,6 +19,8 @@ carpetaCvs = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/cs
 
 def main():
     plotearSedesPorRegion()
+    visualizacion2()
+    visualizacion3()
 
 def plotearSedesPorRegion():
     sedes = pd.read_csv(carpetaCvs + "sedes.csv")
@@ -23,8 +35,9 @@ def plotearSedesPorRegion():
         GROUP BY p.region 
         ORDER BY cantidad_sedes asc;
     """
-
+    # Ejecutar la consulta SQL y almacenar el resultado en un DataFrame
     resultado = ejecutarQuery(query)
+    #Creamos el grafico
     fig, ax = plt.subplots()    # fig.savefig('yourfilename.png')
     plt.rcParams['font.family'] = 'sans-serif'
     ax.barh(data=resultado, 
@@ -40,9 +53,7 @@ def plotearSedesPorRegion():
 def ejecutarQuery(query: str) -> DataFrame:
     return sql^query
 
-
-
-# Gráfico boxplot 
+#%% 
 #Boxplot, por cada región geográfica, del PBI per cápita 2022 de los países
 #donde Argentina tiene una delegación. Mostrar todos los boxplots en una
 #misma figura, ordenados por la mediana de cada región.
@@ -80,7 +91,8 @@ def visualizacion2():
     
     # Mostrar el gráfico
     plt.show()
-    
+
+#%%    
 #Relación entre el PBI per cápita de cada país (año 2022 y para todos los
 #países que se tiene información) y la cantidad de sedes en el exterior que
 #tiene Argentina en esos países.
@@ -98,10 +110,32 @@ def visualizacion3():
         ORDER BY p.region
     """
     
+    # Ejecutar la consulta SQL y almacenar el resultado en un DataFrame
     resultado = ejecutarQuery(query)    
     
+    ## Grafico con todos los paises 
+
+    plt.figure(figsize=(12, 20))  # Ancho x Alto
+    sns.scatterplot(data=resultado, x="PBI", y="nombre", size='cant_sedes_por_pais', hue='cant_sedes_por_pais', legend=False, sizes=(200, 1000), palette= "plasma")
+
+
+    # Lista de países para los cuales quieres agregar líneas horizontales
+    paises_a_linea = ["China", "Italy", "Mexico", "Qatar", "United States", "Pakistan"]
     
-# Iterar sobre cada región y trazar un scatter plot para cada una
+    # Iterar sobre la lista de países y agregar líneas horizontales después de cada uno
+    for pais in paises_a_linea:
+        indice_pais = resultado[resultado['nombre'] == pais].index[0]  # Obtener el índice del país
+        posicion_y_pais = indice_pais + 0.5  # Calcular la posición y del país y agregar un desplazamiento
+        plt.axhline(y=posicion_y_pais, color='gray', linestyle='--', linewidth=1)
+     
+      
+    plt.title(f'Scatterplot de PBI vs. Nombre de País con Gradiente de Colores según Cantidad de Sedes - Región: {region}')
+    plt.xlabel('PBI')
+    plt.ylabel('Nombre de País')
+    plt.show()
+        
+    #realizamos un grafico por region para poder "hacer zoom" y analizar mejor
+    # Iterar sobre cada región y trazar un scatter plot para cada una
 
     for region in resultado['region'].unique():
         plt.figure(figsize=(12, 10))  # Ancho x Alto
@@ -111,27 +145,8 @@ def visualizacion3():
         plt.xlabel('PBI')
         plt.ylabel('Nombre de País')
         plt.show()
-    
-    # Obtener los límites de los ejes x e y
-    xlim = ax.get_xlim()
-    ylim = ax.get_ylim()
-    
-    # Calcular los nuevos límites para centrar los puntos
-    new_xlim = ((xlim[0] + xlim[1]) / 2) - (xlim[1] - xlim[0]) * 0.6, ((xlim[0] + xlim[1]) / 2) + (xlim[1] - xlim[0]) * 0.6
-    new_ylim = ((ylim[0] + ylim[1]) / 2) - (ylim[1] - ylim[0]) * 0.6, ((ylim[0] + ylim[1]) / 2) + (ylim[1] - ylim[0]) * 0.6
-    
 
-## Grafico con todos los paises 
 
-    plt.figure(figsize=(12, 15))  # Ancho x Alto
-    sns.scatterplot(data=resultado, x="PBI", y="nombre", size='cant_sedes_por_pais', hue='cant_sedes_por_pais', legend=False, sizes=(200, 1000), palette= "plasma")
-    plt.title(f'Scatterplot de PBI vs. Nombre de País con Gradiente de Colores según Cantidad de Sedes - Región: {region}')
-    plt.xlabel('PBI')
-    plt.ylabel('Nombre de País')
-    plt.show()
-        
-
-    
     
 if(__name__ == "__main__"):
   main()
