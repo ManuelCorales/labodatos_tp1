@@ -18,11 +18,11 @@ from matplotlib import ticker
 carpetaCvs = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
 
 def main():
-    plotearSedesPorRegion()
+    visualizacion1()
     visualizacion2()
     visualizacion3()
 
-def plotearSedesPorRegion():
+def visualizacion1():
     sedes = pd.read_csv(carpetaCvs + "sedes.csv")
     paises = pd.read_csv(carpetaCvs + "paises.csv")
 
@@ -49,9 +49,6 @@ def plotearSedesPorRegion():
     ax.set_xlabel('Cantidad de sedes', fontsize='medium')
 
     plt.show()
-
-def ejecutarQuery(query: str) -> DataFrame:
-    return sql^query
 
 #%% 
 #Boxplot, por cada región geográfica, del PBI per cápita 2022 de los países
@@ -146,6 +143,8 @@ def visualizacion3():
         plt.ylabel('Nombre de País')
         plt.show()
 
+def ejecutarQuery(query: str) -> DataFrame:
+    return sql^query
 
     
 if(__name__ == "__main__"):
