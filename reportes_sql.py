@@ -14,16 +14,19 @@ Autores     : Corales, Biasoni y Soler
 import pandas as pd
 from inline_sql import sql, sql_val
 
+
+
 def main():
    carpeta = "./csv_limpios/"
+   carpeta= "/home/oem/Desktop/uni/TP1/labodatos_tp1/csv_limpios/"
+   paises = pd.read_csv(carpeta+"paises.csv")
+   redes_sociales = pd.read_csv(carpeta+"redes_sociales.csv")
+   secciones = pd.read_csv(carpeta+"secciones.csv")
+   sedes = pd.read_csv(carpeta+"sedes.csv")
 
-    paises = pd.read_csv(carpeta+"paises.csv")
-    redes_sociales = pd.read_csv(carpeta+"redes_sociales.csv")
-    secciones = pd.read_csv(carpeta+"secciones.csv")
-    sedes = pd.read_csv(carpeta+"Sedes.csv")
+   material_suplementario = "C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/material_suplementario"             
 
-    material_suplementario = "C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/material_suplementario"             
-
+  
 #%%
 def reporte1():
     # primero unimos pais con sedes por medio del id_pais, y guardamos el resultado
@@ -106,7 +109,7 @@ def reporte3():
 
 
     reporte_3 = sql^"""
-                SELECT c.pais_id, COUNT(tipo) AS 'cantidad de tipos de redes'
+                SELECT c.pais_id, COUNT(tipo) AS 'cantidad_de_tipos_de_redes'
                 FROM consultasql AS c
                 GROUP BY c.pais_id
                 """             
@@ -118,21 +121,12 @@ def reporte3():
     # Almacenar el DataFrame en un archivo CSV en la carpeta material_complementario
     reporte_3.to_csv(ruta_archivo_csv, index=False)
            
-#%%
-# =============================================================================
-# PUNTO H.iv 
-# =============================================================================
-
-    rs_paises = sql^"""
-        SELECT c.pais_id, COUNT(tipo) AS 'tipos de redes'
-        FROM consultasql AS c
-        GROUP BY c.pais_id
-    """
+  
 
 
 #%%
 def reporte4():
->>>>>>> 441b2e59f4e4377c592591ed846745c043c97aea
+
     sedes_pais = sql^"""
         SELECT s.id AS 'sede_id', p.nombre  
         FROM sedes AS s
@@ -156,6 +150,7 @@ def reporte4():
     # Almacenar el DataFrame en un archivo CSV en la carpeta material_complementario
     reporte_4.to_csv(ruta_archivo_csv, index=False)
 
+  
 
 >>>>>>> 441b2e59f4e4377c592591ed846745c043c97aea
 if(__name__ == "__main__"):
