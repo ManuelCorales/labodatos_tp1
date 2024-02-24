@@ -50,7 +50,6 @@ def plotearSedesPorRegion():
     plt.ylabel('Región (en inglés)', fontsize=14)
     plt.show()
 
-
 #%% 
 #Boxplot, por cada región geográfica, del PBI per cápita 2022 de los países
 #donde Argentina tiene una delegación. Mostrar todos los boxplots en una
@@ -94,7 +93,6 @@ def visualizacion2():
     
     # Mostrar el gráfico
     plt.show()
-
 
 #%%    
 #Relación entre el PBI per cápita de cada país (año 2022 y para todos los
@@ -144,7 +142,6 @@ def visualizacion3():
     plt.xlabel('PBI')
     plt.ylabel('Nombre de País')
     plt.show()
-
 
 def ejecutarQuery(query: str) -> DataFrame:
     return sql^query
