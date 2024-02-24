@@ -23,41 +23,38 @@ def main():
     visualizacion3()
 
 def plotearSedesPorRegion():
+    # Cargar los datos desde los archivos CSV
     sedes = pd.read_csv(carpetaCvs + "sedes.csv")
     paises = pd.read_csv(carpetaCvs + "paises.csv")
-
+    
     query = """
         SELECT
             p.region AS region,
-            count(p.region) AS cantidad_sedes
+            COUNT(p.region) AS cantidad_sedes
         FROM sedes s
         INNER JOIN paises p ON p.id = s.pais_id
         GROUP BY p.region 
-        ORDER BY cantidad_sedes asc;
+        ORDER BY cantidad_sedes desc;
     """
+    
     # Ejecutar la consulta SQL y almacenar el resultado en un DataFrame
     resultado = ejecutarQuery(query)
-    #Creamos el grafico
-    fig, ax = plt.subplots()    # fig.savefig('yourfilename.png')
-    plt.rcParams['font.family'] = 'sans-serif'
-    ax.barh(data=resultado, 
-           y='region',
-           width='cantidad_sedes',
-          )
-    ax.set_title('Cantidad de sedes argentinas por región')
-    ax.set_ylabel('Región (en inglés)', fontsize='medium')
-    ax.set_xlabel('Cantidad de sedes', fontsize='medium')
-
+    
+    # Creamos el gráfico utilizando seaborn
+    plt.figure(figsize=(10, 8))
+    sns.barplot(data=resultado, x='cantidad_sedes', y='region', palette="plasma")
+    
+    # Personalizar el gráfico
+    plt.title('Cantidad de sedes argentinas por región', fontsize=16)
+    plt.xlabel('Cantidad de sedes', fontsize=14)
+    plt.ylabel('Región (en inglés)', fontsize=14)
     plt.show()
 
-def ejecutarQuery(query: str) -> DataFrame:
-    return sql^query
 
 #%% 
 #Boxplot, por cada región geográfica, del PBI per cápita 2022 de los países
 #donde Argentina tiene una delegación. Mostrar todos los boxplots en una
 #misma figura, ordenados por la mediana de cada región.
-
 
 def visualizacion2():
     sedes = pd.read_csv(carpetaCvs + "sedes.csv")
@@ -71,26 +68,33 @@ def visualizacion2():
         INNER JOIN paises p ON p.id = s.pais_id
         ORDER BY p.region ASC
     """
-    
     # Ejecutar la consulta SQL y almacenar el resultado en un DataFrame
     resultado = ejecutarQuery(query)
     
+    # Calcular las medianas por región y ordenarlas
+    medianas_por_region = resultado.groupby('region')['PBI per capita 2022'].median().sort_values()
+        
     # Crear el gráfico de caja con un tamaño de figura ajustado
     fig, ax = plt.subplots()  # Ajusta el tamaño de la figura según tus preferencias
     
-    # Utilizar el método boxplot() en el DataFrame resultado
     resultado.boxplot(by=['region'], column=['PBI per capita 2022'], showmeans=True, ax=ax, layout=(1, 1))
     
-    # Personalizar el gráfico
-    ax.set_title('')
+    # Personalizar el título del gráfico
+    ax.set_title('PBI per capita 2022 por región')
+    
+    # Personalizar el eje y
     ax.set_ylabel('PBI per capita 2022')
     ax.yaxis.set_major_formatter(ticker.StrMethodFormatter("{x:,.2f}"))  # Agrega separador de decimales
     
     # Ajustar las etiquetas del eje x para que aparezcan diagonalmente y no se superpongan
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
     
+    # Eliminar el título generado automáticamente
+    plt.suptitle('')
+    
     # Mostrar el gráfico
     plt.show()
+
 
 #%%    
 #Relación entre el PBI per cápita de cada país (año 2022 y para todos los
@@ -111,14 +115,22 @@ def visualizacion3():
     """
     
     # Ejecutar la consulta SQL y almacenar el resultado en un DataFrame
-    resultado = ejecutarQuery(query)    
+    resultado = ejecutarQuery(query)
+    
+    # Calcular el número de colores necesarios para la paleta personalizada
+    num_categorias = resultado['cant_sedes_por_pais'].nunique()
+    
+    # Generar una paleta de colores personalizada con más colores
+    custom_palette = sns.color_palette("plasma", n_colors=num_categorias)
     
     ## Grafico con todos los paises 
-
+    
     plt.figure(figsize=(12, 20))  # Ancho x Alto
-    sns.scatterplot(data=resultado, x="PBI", y="nombre", size='cant_sedes_por_pais', hue='cant_sedes_por_pais', legend=False, sizes=(200, 1000), palette= "plasma")
-
-
+    sns.scatterplot(data=resultado, x="PBI", y="nombre", s=300, hue='cant_sedes_por_pais', palette=custom_palette)
+    
+    # Add legend
+    plt.legend(title='Cantidad de Sedes', fontsize=18)
+    
     # Lista de países para los cuales quieres agregar líneas horizontales
     paises_a_linea = ["China", "Italy", "Mexico", "Qatar", "United States", "Pakistan"]
     
@@ -127,26 +139,15 @@ def visualizacion3():
         indice_pais = resultado[resultado['nombre'] == pais].index[0]  # Obtener el índice del país
         posicion_y_pais = indice_pais + 0.5  # Calcular la posición y del país y agregar un desplazamiento
         plt.axhline(y=posicion_y_pais, color='gray', linestyle='--', linewidth=1)
-     
-      
-    plt.title(f'Scatterplot de PBI vs. Nombre de País con Gradiente de Colores según Cantidad de Sedes - Región: {region}')
+    
+    plt.title("titulo")
     plt.xlabel('PBI')
     plt.ylabel('Nombre de País')
     plt.show()
-        
-    #realizamos un grafico por region para poder "hacer zoom" y analizar mejor
-    # Iterar sobre cada región y trazar un scatter plot para cada una
-
-    for region in resultado['region'].unique():
-        plt.figure(figsize=(12, 10))  # Ancho x Alto
-        data_region = resultado[resultado['region'] == region]
-        sns.scatterplot(data=data_region, x="PBI", y="nombre", size='cant_sedes_por_pais', hue='cant_sedes_por_pais', legend=False, sizes=(200, 1000), palette= "plasma")
-        plt.title(f'Scatterplot de PBI vs. Nombre de País con Gradiente de Colores según Cantidad de Sedes - Región: {region}')
-        plt.xlabel('PBI')
-        plt.ylabel('Nombre de País')
-        plt.show()
 
 
+def ejecutarQuery(query: str) -> DataFrame:
+    return sql^query
     
 if(__name__ == "__main__"):
   main()
