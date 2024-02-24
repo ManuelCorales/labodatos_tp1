@@ -18,12 +18,12 @@ from matplotlib import ticker
 carpetaCvs = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
 
 def main():
-    plotearSedesPorRegion()
+    visualizacion1()
     visualizacion2()
     visualizacion3()
 
-def plotearSedesPorRegion():
-    # Cargar los datos desde los archivos CSV
+def visualizacion1():
+>>>>>>> 032a6b5748c01e460b29efd6a727563d0ac56477
     sedes = pd.read_csv(carpetaCvs + "sedes.csv")
     paises = pd.read_csv(carpetaCvs + "paises.csv")
     
