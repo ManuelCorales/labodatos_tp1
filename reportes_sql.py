@@ -15,16 +15,20 @@ import pandas as pd
 from inline_sql import sql, sql_val
 
 
+# material_suplementario = "C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/material_suplementario"             
+material_suplementario = "./material_suplementario"             
+# carpeta= "/home/oem/Desktop/uni/TP1/labodatos_tp1/csv_limpios/"
+carpeta = "./csv_limpios/"
 
 def main():
-   carpeta = "./csv_limpios/"
-   carpeta= "/home/oem/Desktop/uni/TP1/labodatos_tp1/csv_limpios/"
-   paises = pd.read_csv(carpeta+"paises.csv")
-   redes_sociales = pd.read_csv(carpeta+"redes_sociales.csv")
-   secciones = pd.read_csv(carpeta+"secciones.csv")
-   sedes = pd.read_csv(carpeta+"sedes.csv")
-
-   material_suplementario = "C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/material_suplementario"             
+    paises = pd.read_csv(carpeta+"paises.csv")
+    redes_sociales = pd.read_csv(carpeta+"redes_sociales.csv")
+    secciones = pd.read_csv(carpeta+"secciones.csv")
+    sedes = pd.read_csv(carpeta+"sedes.csv")
+    reporte1()
+    reporte2()
+    reporte3()
+    reporte4()
 
   
 #%%
@@ -75,7 +79,7 @@ def reporte1():
 
 #%%
 def reporte2():
-    consultasql = sql^"""
+    reporte_2 = sql^"""
         SELECT p.Region, COUNT() AS 'Paises Con Sedes Argentinas', AVG(p.PBI) AS 'Promedio PBI per Cápita 2022 (U$S)'
         FROM paises AS p
         INNER JOIN sedes AS s
@@ -96,9 +100,9 @@ def reporte2():
 
 def reporte3():
     consultasql = sql^"""
-        SELECT DISTINCT rs.tipo, s.pais_id 
+        SELECT DISTINCT rs.tipo, s.pais_id
         FROM sedes AS s
-        JOIN redes_sociales AS rs
+        INNER JOIN redes_sociales AS rs
         ON rs.id_sede = s.id
         GROUP BY s.pais_id, rs.tipo
     """
@@ -151,7 +155,5 @@ def reporte4():
     reporte_4.to_csv(ruta_archivo_csv, index=False)
 
   
-
->>>>>>> 441b2e59f4e4377c592591ed846745c043c97aea
 if(__name__ == "__main__"):
   main()

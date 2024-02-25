@@ -15,7 +15,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib import ticker 
 
-carpetaCvs = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
+# carpetaCvs = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
+carpetaCvs = "./csv_limpios/"
 
 def main():
     visualizacion1()
@@ -23,7 +24,6 @@ def main():
     visualizacion3()
 
 def visualizacion1():
->>>>>>> 032a6b5748c01e460b29efd6a727563d0ac56477
     sedes = pd.read_csv(carpetaCvs + "sedes.csv")
     paises = pd.read_csv(carpetaCvs + "paises.csv")
     
@@ -60,29 +60,30 @@ def visualizacion2():
     paises = pd.read_csv(carpetaCvs + "paises.csv")
 
     query = """
-        SELECT
+        SELECT DISTINCT
             p.region AS region,
-            PBI AS 'PBI per capita 2022',
+            PBI,
         FROM sedes s
         INNER JOIN paises p ON p.id = s.pais_id
         ORDER BY p.region ASC
     """
     # Ejecutar la consulta SQL y almacenar el resultado en un DataFrame
     resultado = ejecutarQuery(query)
-    
+
     # Calcular las medianas por región y ordenarlas
-    medianas_por_region = resultado.groupby('region')['PBI per capita 2022'].median().sort_values()
+    medianas_por_region = resultado.groupby('region')['PBI'].median().sort_values()
         
     # Crear el gráfico de caja con un tamaño de figura ajustado
     fig, ax = plt.subplots()  # Ajusta el tamaño de la figura según tus preferencias
     
-    resultado.boxplot(by=['region'], column=['PBI per capita 2022'], showmeans=True, ax=ax, layout=(1, 1))
+    resultado.boxplot(by=['region'], column=['PBI'], showmeans=True, ax=ax, layout=(1, 1))
     
     # Personalizar el título del gráfico
-    ax.set_title('PBI per capita 2022 por región')
+    ax.set_title('PBI per capita 2022 por región geográfica')
     
     # Personalizar el eje y
-    ax.set_ylabel('PBI per capita 2022')
+    ax.set_ylabel('PBI per capita 2022 (USD)')
+    ax.set_xlabel('Región geográfica')
     ax.yaxis.set_major_formatter(ticker.StrMethodFormatter("{x:,.2f}"))  # Agrega separador de decimales
     
     # Ajustar las etiquetas del eje x para que aparezcan diagonalmente y no se superpongan
@@ -103,13 +104,13 @@ def visualizacion3():
     paises = pd.read_csv(carpetaCvs + "paises.csv")
     
     query = """
-        SELECT
+        SELECT DISTINCT
             p.nombre, p.region, p.PBI, COUNT(p.nombre) AS 'cant_sedes_por_pais'
         FROM paises AS p
         INNER JOIN sedes AS s
         ON p.id = s.pais_id
         GROUP BY p.nombre, p.id, p.PBI, p.region
-        ORDER BY p.region
+        ORDER BY cant_sedes_por_pais
     """
     
     # Ejecutar la consulta SQL y almacenar el resultado en un DataFrame
@@ -138,8 +139,9 @@ def visualizacion3():
         posicion_y_pais = indice_pais + 0.5  # Calcular la posición y del país y agregar un desplazamiento
         plt.axhline(y=posicion_y_pais, color='gray', linestyle='--', linewidth=1)
     
-    plt.title("titulo")
-    plt.xlabel('PBI')
+    plt.title("Países en función de su PBI per cápita. Gradiente de color de acuerdo a la cantidad de delegaciones argentinas.", fontsize=16)
+    plt.xlabel('PBI per cápita (USD)')
+
     plt.ylabel('Nombre de País')
     plt.show()
 

@@ -25,7 +25,7 @@ from pandas import DataFrame
     id(PK) → (id_sede(FK))
     
     Tabla red social:
-    {id_sede(FK), url} → tipo
+    url(PK) → tipo
 """
 
 #%% carpetaOriginal contiene los csv sin limpiar
