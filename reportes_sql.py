@@ -18,7 +18,6 @@ from inline_sql import sql, sql_val
 
 def main():
    carpeta = "./csv_limpios/"
-   carpeta= "/home/oem/Desktop/uni/TP1/labodatos_tp1/csv_limpios/"
    paises = pd.read_csv(carpeta+"paises.csv")
    redes_sociales = pd.read_csv(carpeta+"redes_sociales.csv")
    secciones = pd.read_csv(carpeta+"secciones.csv")
