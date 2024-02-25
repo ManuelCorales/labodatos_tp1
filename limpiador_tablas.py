@@ -32,8 +32,8 @@ from pandas import DataFrame
 ## Luego de ser limpiados, se almacenan en carpetaDump
 # carpetaOriginal = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_originales/" 
 # carpetaDump = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
-carpetaOriginal = "./csv_originales/" 
-carpetaDump = "./csv_limpios/"
+carpetaOriginal = "./TablasOriginales/" 
+carpetaDump = "./TablasLimpias/"
 
 
 def main():

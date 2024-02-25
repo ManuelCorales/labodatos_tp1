@@ -16,7 +16,7 @@ import seaborn as sns
 from matplotlib import ticker 
 
 # carpetaCvs = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
-carpetaCvs = "./csv_limpios/"
+carpetaCvs = "./TablasLimpias/"
 
 def main():
     visualizacion1()
@@ -48,6 +48,11 @@ def visualizacion1():
     plt.title('Cantidad de sedes argentinas por región', fontsize=16)
     plt.xlabel('Cantidad de sedes', fontsize=14)
     plt.ylabel('Región (en inglés)', fontsize=14)
+    
+    # Agregar etiquetas con la cantidad de sedes al final de cada barra
+    for i, total in enumerate(resultado['cantidad_sedes']):
+        plt.text(total + 0.5, i, f'{total}', va='center', ha='left', fontsize=12, weight='bold', color='black')
+    
     plt.show()
 
 #%% 
@@ -124,23 +129,15 @@ def visualizacion3():
     
     ## Grafico con todos los paises 
     
-    plt.figure(figsize=(12, 20))  # Ancho x Alto
+    plt.figure(figsize=(12, 25))  # Ancho x Alto
     sns.scatterplot(data=resultado, x="PBI", y="nombre", s=300, hue='cant_sedes_por_pais', palette=custom_palette)
     
     # Add legend
     plt.legend(title='Cantidad de Sedes', fontsize=18)
     
-    # Lista de países para los cuales quieres agregar líneas horizontales
-    paises_a_linea = ["China", "Italy", "Mexico", "Qatar", "United States", "Pakistan"]
-    
-    # Iterar sobre la lista de países y agregar líneas horizontales después de cada uno
-    for pais in paises_a_linea:
-        indice_pais = resultado[resultado['nombre'] == pais].index[0]  # Obtener el índice del país
-        posicion_y_pais = indice_pais + 0.5  # Calcular la posición y del país y agregar un desplazamiento
-        plt.axhline(y=posicion_y_pais, color='gray', linestyle='--', linewidth=1)
-    
     plt.title("Países en función de su PBI per cápita. Gradiente de color de acuerdo a la cantidad de delegaciones argentinas.", fontsize=16)
     plt.xlabel('PBI per cápita (USD)')
+    plt.grid()
 
     plt.ylabel('Nombre de País')
     plt.xticks(fontsize=14)  # Agrandar la letra del eje x

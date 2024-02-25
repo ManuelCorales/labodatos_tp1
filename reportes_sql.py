@@ -18,7 +18,7 @@ from inline_sql import sql, sql_val
 # material_suplementario = "C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/material_suplementario"             
 material_suplementario = "./material_suplementario"             
 # carpeta= "/home/oem/Desktop/uni/TP1/labodatos_tp1/csv_limpios/"
-carpeta = "./csv_limpios/"
+carpeta = "./TablasLimpias/"
 
 def main():
     paises = pd.read_csv(carpeta+"paises.csv")
