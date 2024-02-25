@@ -143,6 +143,9 @@ def visualizacion3():
     plt.xlabel('PBI per cápita (USD)')
 
     plt.ylabel('Nombre de País')
+    plt.xticks(fontsize=14)  # Agrandar la letra del eje x
+    plt.yticks(fontsize=14)  # Agrandar la letra del eje y
+
     plt.show()
 
 def ejecutarQuery(query: str) -> DataFrame:
