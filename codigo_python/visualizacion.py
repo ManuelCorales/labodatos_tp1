@@ -15,7 +15,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib import ticker 
 
-# carpetaCvs = r"C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/csv_limpios/"
 carpetaCvs = "./TablasLimpias/"
 
 def main():
@@ -103,7 +102,7 @@ def visualizacion2():
     # Mostrar el gráfico
     plt.show()
 
-    # realizo un grafico para ver mas grande las ultimas dos regiones
+##### realizo un grafico para ver mas grande las ultimas dos regiones
          
     # Obtener las últimas dos regiones según las medianas más bajas
     medianas_ultimas_dos_region = medianas_por_region.nsmallest(2).sort_values(ascending=False)
@@ -179,6 +178,10 @@ def visualizacion3():
     plt.title("Países en función de su PBI per cápita. Gradiente de color de acuerdo a la cantidad de delegaciones argentinas.", fontsize=16)
     plt.xlabel('PBI per cápita (USD)')
     plt.grid()
+    
+    # Formatear el eje x con separador de decimales
+    plt.gca().xaxis.set_major_formatter(ticker.StrMethodFormatter("{x:,.2f}"))
+    
 
     plt.ylabel('Nombre de País')
     plt.xticks(fontsize=14)  # Agrandar la letra del eje x

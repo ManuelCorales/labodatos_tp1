@@ -15,7 +15,6 @@ import pandas as pd
 from inline_sql import sql, sql_val
 
 
-# material_suplementario = "C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/material_suplementario"             
 material_suplementario = "./material_suplementario"             
 carpeta = "./TablasLimpias/"
 
