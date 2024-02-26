@@ -17,7 +17,6 @@ from inline_sql import sql, sql_val
 
 # material_suplementario = "C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/material_suplementario"             
 material_suplementario = "./material_suplementario"             
-# carpeta= "/home/oem/Desktop/uni/TP1/labodatos_tp1/csv_limpios/"
 carpeta = "./TablasLimpias/"
 
 def main():
@@ -28,7 +27,8 @@ def main():
    secciones = pd.read_csv(carpeta+"secciones.csv")
    sedes = pd.read_csv(carpeta+"sedes.csv")
 
-   material_suplementario = "C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/material_suplementario"             
+   material_suplementario = "C:/Users/soler/Documents/Nari/faca/labodatos/tp1/labodatos_tp1/material_suplementario"      
+   material_suplementario = "/home/oem/Desktop/uni/TP1/labodatos_tp1/material_suplementario/"       
 =======
     paises = pd.read_csv(carpeta+"paises.csv")
     redes_sociales = pd.read_csv(carpeta+"redes_sociales.csv")
@@ -77,6 +77,7 @@ def reporte1():
         FROM pais_sedes AS ps
         JOIN secciones_promedios AS sc
         ON sc.pais_id = ps.id
+        ORDER BY cantidad_de_sedes DESC, nombre ASC
     """
 
     # Almacenamos el reporte
@@ -149,11 +150,12 @@ def reporte4():
     """
 
     reporte_4= sql^"""
-            SELECT sp.nombre AS 'Pais', r.id_sede, r.tipo AS 'red social',
+            SELECT sp.nombre AS 'Pais', r.id_sede, r.tipo AS 'red_social',
             r.url
             FROM redes_sociales AS r
             JOIN sedes_pais AS sp
             ON r.id_sede = sp.sede_id
+            ORDER BY Pais ASC, id_sede ASC, red_social ASC, url ASC
             """
 
     # Almacenamos el reporte
