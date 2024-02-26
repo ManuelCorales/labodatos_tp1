@@ -72,12 +72,15 @@ def visualizacion2():
         INNER JOIN paises p ON p.id = s.pais_id
         ORDER BY p.region ASC
     """
-    # Ejecutar la consulta SQL y almacenar el resultado en un DataFrame
+     # Ejecutar la consulta SQL y almacenar el resultado en un DataFrame
     resultado = ejecutarQuery(query)
-
-    # Calcular las medianas por región y ordenarlas
-    medianas_por_region = resultado.groupby('region')['PBI'].median().sort_values()
         
+    # Calcular las medianas por región y ordenarlas de manera descendente
+    medianas_por_region = resultado.groupby('region')['PBI'].median().sort_values(ascending=False)
+    
+    # Establecer el orden de las categorías de la columna 'region'
+    resultado['region'] = pd.Categorical(resultado['region'], categories=medianas_por_region.index, ordered=True)
+    
     # Crear el gráfico de caja con un tamaño de figura ajustado
     fig, ax = plt.subplots()  # Ajusta el tamaño de la figura según tus preferencias
     
@@ -99,6 +102,44 @@ def visualizacion2():
     
     # Mostrar el gráfico
     plt.show()
+
+    # realizo un grafico para ver mas grande las ultimas dos regiones
+         
+    # Obtener las últimas dos regiones según las medianas más bajas
+    medianas_ultimas_dos_region = medianas_por_region.nsmallest(2).sort_values(ascending=False)
+    
+    # Filtrar el DataFrame resultado para que solo contenga las últimas dos regiones
+    resultado_ultimas_dos = resultado[resultado['region'].isin(medianas_ultimas_dos_region.index)]
+    
+    # Establecer el orden de las categorías de la columna 'region'
+    resultado_ultimas_dos['region'] = pd.Categorical(resultado_ultimas_dos['region'], categories=medianas_ultimas_dos_region.index, ordered=True)
+    
+    # Crear el gráfico de caja con un tamaño de figura ajustado
+    fig, ax = plt.subplots(figsize=(10, 8))
+    
+    resultado_ultimas_dos.boxplot(by='region', column='PBI', showmeans=True, ax=ax)
+    
+    # Personalizar el título del gráfico
+    ax.set_title('PBI per capita 2022 por las dos últimas regiones geográficas con menores medianas')
+    
+    # Personalizar el eje y
+    ax.set_ylabel('PBI per capita 2022 (USD)')
+    
+    # Personalizar el eje x
+    ax.set_xlabel('Región geográfica')
+    
+    # Formatear el eje y con separador de decimales
+    ax.yaxis.set_major_formatter(ticker.StrMethodFormatter("{x:,.2f}"))
+    
+    # Ajustar las etiquetas del eje x para que aparezcan diagonalmente y no se superpongan
+    ax.set_xticklabels(ax.get_xticklabels())
+    
+    # Eliminar el título generado automáticamente
+    plt.suptitle('')
+    
+    # Mostrar el gráfico
+    plt.show()
+    
 
 #%%    
 #Relación entre el PBI per cápita de cada país (año 2022 y para todos los
